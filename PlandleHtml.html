@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="PlandleStyles.CSS">
+    <title>Aircraft Wordle</title>
+</head>
+<body>
+<h1 id="gameTitle">Aircraft Wordle</h1>
+<input id="searchBox" placeholder="Type plane...">
+<div id="dropdown"></div>
+<button id="submitBtn">Submit</button>
+
+<div id="board"></div>
+
+<script>
+const planes =  [
+  { aircraft: "F-22 Raptor", role: "Fighter", year: 2005, country: "United States", status: "Active" },
+  { aircraft: "F-35 Lightning II", role: "Fighter", year: 2015, country: "United States", status: "Active" },
+  { aircraft: "B-2 Spirit", role: "Bomber", year: 1997, country: "United States", status: "Active" },
+  { aircraft: "B-21 Raider", role: "Bomber", year: 2026, country: "United States", status: "Future" },
+  { aircraft: "F-15C/EX", role: "Fighter", year: 1976, country: "United States", status: "Active" },
+  { aircraft: "A-10C Thunderbolt II", role: "Attack", year: 1976, country: "United States", status: "Active" },
+  { aircraft: "MQ-9 Reaper", role: "Drone", year: 2007, country: "United States", status: "Active" },
+  { aircraft: "C-17 Globemaster III", role: "Cargo", year: 1995, country: "United States", status: "Active" },
+  { aircraft: "KC-46 Pegasus", role: "Tanker/Cargo", year: 2019, country: "United States", status: "Active" },
+  { aircraft: "RQ-170 Sentinel", role: "Drone", year: 2014, country: "United States", status: "Active" },
+
+  { aircraft: "J-20 Mighty Dragon", role: "Fighter", year: 2017, country: "China", status: "Active" },
+  { aircraft: "J-10C", role: "Fighter", year: 2015, country: "China", status: "Active" },
+  { aircraft: "J-16", role: "Fighter", year: 2013, country: "China", status: "Active" },
+  { aircraft: "H-6K", role: "Bomber", year: 2011, country: "China", status: "Active" },
+  { aircraft: "Y-20 Kunpeng", role: "Transport", year: 2016, country: "China", status: "Active" },
+  { aircraft: "KJ-500 AEW&C", role: "Surveillance", year: 2018, country: "China", status: "Active" },
+  { aircraft: "WZ-8", role: "Drone", year: 2030, country: "China", status: "Experimental" },
+
+  { aircraft: "Su-57", role: "Fighter", year: 2020, country: "Russia", status: "Active" },
+  { aircraft: "Su-35S", role: "Fighter", year: 2014, country: "Russia", status: "Active" },
+  { aircraft: "Su-34", role: "Fighter/Bomber", year: 2000, country: "Russia", status: "Active" },
+  { aircraft: "Tu-160M Blackjack", role: "Bomber", year: 1987, country: "Russia", status: "Active" },
+  { aircraft: "Il-76", role: "Multirole/Tanker", year: 1974, country: "Russia", status: "Active" },
+  { aircraft: "MiG-31BM", role: "Fighter", year: 2010, country: "Russia", status: "Active" },
+  { aircraft: "Su-25SM3", role: "Attack", year: 2010, country: "Russia", status: "Active" },
+
+  { aircraft: "Eurofighter Typhoon", role: "Attack", year: 2003, country: "Europe (UK / Germany / Italy / Spain consortia)", status: "Active" },
+  { aircraft: "Dassault Rafale", role: "Fighter", year: 2001, country: "France", status: "Active" },
+  { aircraft: "Saab Gripen E", role: "Fighter", year: 2019, country: "Sweden", status: "Active" },
+  { aircraft: "A400M Atlas", role: "Transport", year: 2009, country: "Europe (mainly Airbus / EU consortium)", status: "Active" },
+  { aircraft: "Panavia Tornado IDS", role: "Multirole / Fighter-Bomber / Recon", year: 1975, country: "Europe (UK / Germany / Italy consortium)", status: "Legacy/Retiring" },
+  { aircraft: "Mirage 2000", role: "Fighter", year: 1984, country: "France", status: "Retiring" },
+  { aircraft: "BAE Hawk", role: "Trainer", year: 1980, country: "United Kingdom", status: "Active" }
+];
+const namesPlane = planes.map(a => a.aircraft);
+let selectedItem = null;
+
+const answer = planes[Math.floor(Math.random()*planes.length)];
+console.log(answer);
+
+const box = document.getElementById("searchBox");
+const drop = document.getElementById("dropdown");
+
+// show dropdown when typing
+box.addEventListener("input", () => {
+  const text = box.value.toLowerCase();
+  drop.innerHTML = "";
+
+  const filtered = namesPlane.filter(item =>
+    item.toLowerCase().includes(text)
+  );
+
+  if (filtered.length === 0 || text === "") {
+    drop.style.display = "none";
+    return;
+  }
+
+  filtered.forEach(item => {
+    const div = document.createElement("div");
+    div.textContent = item;
+    div.className = "item";
+
+    div.onclick = () => {
+      box.value = item;
+      selectedItem = item;
+      drop.style.display = "none";
+    };
+
+    drop.appendChild(div);
+  });
+
+  drop.style.display = "block";
+});
+
+// hide dropdown if clicking outside
+document.addEventListener("click", (e) => {
+  if (e.target !== box) drop.style.display = "none";
+});
+
+// Button actions
+submitBtn.addEventListener("click", () => {
+    const guess = planes.find(x => x.aircraft.toLowerCase() === selectedItem.toLowerCase());
+    if(selectedItem) {
+        if(selectedItem==answer){
+            console.log("That's Correct!");
+        }
+        else {
+            console.log("Try again!");
+            
+        }
+        addRow(guess)
+    } else {
+        alert("Please select an item first!");
+    }
+});
+
+// Add a row for each guess
+
+function addRow(guess) {
+    const row = document.createElement("div");
+    row.className = "row";
+
+    console.log(guess.country)
+    console.log(answer.country)
+
+    createCell(guess.aircraft, guess.aircraft == answer.aircraft, row);
+    createCell(guess.country, guess.country == answer.country, row);
+    createCell(guess.year, guess.year == answer.year, row);
+    createCell(guess.role, guess.role == answer.role, row);
+    createCell(guess.status, guess.status == answer.status, row);
+
+    board.appendChild(row);
+    row.scrollIntoView({ behavior: "smooth" });
+}
+
+function createCell(value, match, row) {
+    const cell = document.createElement("div");
+    cell.className = "cell";
+    console.log(match)
+    if (match) {
+        cell.classList.add("correct");
+    } else {
+        cell.classList.add("wrong");
+    }
+
+    if (!cell.textContent)
+        cell.textContent = value;
+
+    row.appendChild(cell);
+}
+
+</script>
+
+</body>
+</html>
