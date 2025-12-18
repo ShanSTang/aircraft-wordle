@@ -55,6 +55,11 @@ body {
         background: #a33a3a;
         color: white;
     }
+
+    .close { 
+        background:#d3ad69;
+        color: black; 
+    }       
     
     button {
         margin-top:10px;
@@ -86,4 +91,5 @@ body {
 
 .item:hover {
   background: #eee;
+
 }
