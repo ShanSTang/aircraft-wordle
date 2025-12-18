@@ -122,7 +122,7 @@ function addRow(guess) {
 
     createCell(guess.aircraft, guess.aircraft == answer.aircraft, row);
     createCell(guess.country, guess.country == answer.country, row);
-    createCell(guess.year, guess.year == answer.year, row);
+    createCell(guess.year, guess.year == answer.year, row, Math.floor(guess.year/10)==Math.floor(answer.year/10));
     createCell(guess.role, guess.role == answer.role, row);
     createCell(guess.status, guess.status == answer.status, row);
 
@@ -130,13 +130,16 @@ function addRow(guess) {
     row.scrollIntoView({ behavior: "smooth" });
 }
 
-function createCell(value, match, row) {
+function createCell(value, match, row, hint) {
     const cell = document.createElement("div");
     cell.className = "cell";
     console.log(match)
     if (match) {
         cell.classList.add("correct");
-    } else {
+    } else if(hint) {
+        cell.classList.add("close")
+    }
+    else{
         cell.classList.add("wrong");
     }
 
@@ -150,3 +153,4 @@ function createCell(value, match, row) {
 
 </body>
 </html>
+
